@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { User, Rocket, Activity, Cpu } from 'lucide-react';
 import NeonStellarBackground from './NeonStellarBackground';
 import { staggerContainer, fadeUpTilt, clipPathReveal } from '../../utils/animations';
+import img1 from '../../assets/images/animeshimg1.jpg';
+import img2 from '../../assets/images/animeshimg2.jpg';
 
 const AboutCard = ({ children, className = "" }) => {
     return (
@@ -54,12 +56,12 @@ const AboutSection = () => {
                     {/* Card 1: Portrait */}
                     <AboutCard className="md:col-span-1 md:row-span-2 p-0 flex flex-col justify-end">
                         <img
-                            src="/src/assets/images/animeshimg1.jpg"
+                            src={img1}
                             alt="Animesh Base"
                             className="absolute inset-0 w-full h-full object-cover grayscale opacity-100 group-hover:opacity-0 transition-all duration-700 z-10"
                         />
                         <img
-                            src="/src/assets/images/animeshimg2.jpg"
+                            src={img2}
                             alt="Animesh Active"
                             className="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-100 transition-all duration-700 z-0"
                         />
