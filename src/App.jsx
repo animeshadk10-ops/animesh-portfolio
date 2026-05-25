@@ -6,11 +6,13 @@ import AboutSection from './components/about/AboutSection';
 import ExperienceSection from './components/experience/ExperienceSection';
 import ProjectsSection from './components/projects/ProjectsSection';
 import ContactSection from './components/contact/ContactSection';
+import BackToTop from './components/global/BackToTop';
 
 function App() {
   return (
     <div className="overflow-x-hidden">
       <GlobalCursor />
+      <BackToTop />
 
       <Hero />
 

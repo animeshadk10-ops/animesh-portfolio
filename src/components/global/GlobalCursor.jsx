@@ -31,8 +31,8 @@ const GlobalCursor = () => {
         };
 
         const handleMouseOver = (e) => {
-            const isText = ['H1', 'H2', 'H3', 'P', 'SPAN', 'DIV'].includes(e.target.tagName);
-            setIsHovering(isText || !!e.target.closest('button, a'));
+            const isInteractive = !!e.target.closest('button, a, input, textarea, [role="button"]');
+            setIsHovering(isInteractive);
         };
 
         window.addEventListener('mousemove', moveCursor);
@@ -60,14 +60,14 @@ const GlobalCursor = () => {
                 }}
             />
             <motion.div
-                className="fixed top-0 left-0 w-2 h-2 bg-[#FF4500] rounded-full pointer-events-none z-[9999] mix-blend-difference"
+                className="fixed top-0 left-0 w-2 h-2 bg-[#FF007F] rounded-full pointer-events-none z-[9999] mix-blend-difference"
                 style={{
                     x: innerX,
                     y: innerY,
                     translateX: "-50%",
                     translateY: "-50%",
-                    scale: isHovering ? 2 : 1,
-                    boxShadow: "0 0 15px 4px rgba(255, 69, 0, 0.8)"
+                    scale: isHovering ? 4 : 1,
+                    boxShadow: isHovering ? "0 0 20px 6px rgba(255, 0, 127, 0.6)" : "0 0 15px 4px rgba(255, 0, 127, 0.4)"
                 }}
                 transition={{ scale: { type: 'spring', stiffness: 300, damping: 20 } }}
             />

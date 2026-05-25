@@ -1,7 +1,8 @@
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import AuroraBackground from './AuroraBackground';
 import DecodeText from '../global/DecodeText';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ContactNode = ({ label, value }) => {
     return (
@@ -13,9 +14,18 @@ const ContactNode = ({ label, value }) => {
 };
 
 const ContactSection = () => {
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission logic here
+        setIsLoading(true);
+        // Simulate API call
+        setTimeout(() => {
+            setIsLoading(false);
+            setIsSubmitted(true);
+            setTimeout(() => setIsSubmitted(false), 5000);
+        }, 1500);
     };
 
     const inputClasses = "w-full bg-transparent border-b border-white/20 pb-4 text-white text-lg focus:outline-none focus:border-[#00F0FF] focus:shadow-[0_4px_15px_-3px_rgba(0,240,255,0.3)] transition-all duration-300 placeholder:text-gray-400 placeholder:font-mono placeholder:text-sm font-light [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[-webkit-text-fill-color:white] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0px_1000px_transparent_inset] [&:-webkit-autofill]:transition-[background-color] [&:-webkit-autofill]:duration-[5000s] [&:-webkit-autofill]:ease-in-out";
@@ -44,36 +54,72 @@ const ContactSection = () => {
 
                 {/* Right Column: The Secure Form */}
                 <div className="flex flex-col justify-center">
-                    <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Your Name // System ID"
-                            className={inputClasses}
-                            required
-                        />
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email Address // Return Node"
-                            className={inputClasses}
-                            required
-                        />
-                        <textarea
-                            rows="4"
-                            name="message"
-                            placeholder="Encrypted Payload // How can we collaborate?"
-                            className={`${inputClasses} resize-none`}
-                            required
-                        ></textarea>
+                    <AnimatePresence mode="wait">
+                        {!isSubmitted ? (
+                            <motion.form
+                                key="contact-form"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="flex flex-col gap-8"
+                                onSubmit={handleSubmit}
+                            >
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Your Name // System ID"
+                                    className={inputClasses}
+                                    required
+                                />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email Address // Return Node"
+                                    className={inputClasses}
+                                    required
+                                />
+                                <textarea
+                                    rows="4"
+                                    name="message"
+                                    placeholder="Encrypted Payload // How can we collaborate?"
+                                    className={`${inputClasses} resize-none`}
+                                    required
+                                ></textarea>
 
-                        <button type="submit" className="relative overflow-hidden group w-full md:w-auto px-10 py-4 bg-white text-black font-black uppercase tracking-[0.2em] rounded-full hover:text-white transition-colors duration-300">
-                            <span className="absolute inset-0 w-full h-full bg-[#FF007F] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-x-100 z-0"></span>
-                            <span className="relative z-10 flex items-center gap-2 justify-center">
-                                TRANSMIT PACKET <ArrowRight size={16} />
-                            </span>
-                        </button>
-                    </form>
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="relative overflow-hidden group w-full md:w-auto px-10 py-4 bg-white text-black font-black uppercase tracking-[0.2em] rounded-full hover:text-white transition-colors duration-300 disabled:opacity-50"
+                                >
+                                    <span className="absolute inset-0 w-full h-full bg-[#FF007F] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-x-100 z-0"></span>
+                                    <span className="relative z-10 flex items-center gap-2 justify-center">
+                                        {isLoading ? "ENCRYPTING..." : "TRANSMIT PACKET"} <ArrowRight size={16} />
+                                    </span>
+                                </button>
+                            </motion.form>
+                        ) : (
+                            <motion.div
+                                key="success-message"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="flex flex-col items-center text-center gap-6 p-8 rounded-3xl bg-[#00F0FF]/5 border border-[#00F0FF]/20"
+                            >
+                                <div className="w-20 h-20 rounded-full bg-[#00F0FF]/10 flex items-center justify-center">
+                                    <CheckCircle2 size={40} className="text-[#00F0FF]" />
+                                </div>
+                                <h4 className="text-2xl font-bold text-white uppercase tracking-widest">Packet Received</h4>
+                                <p className="text-gray-400 font-light leading-relaxed">
+                                    Your connection request has been successfully encrypted and transmitted. I'll get back to you shortly.
+                                </p>
+                                <button
+                                    onClick={() => setIsSubmitted(false)}
+                                    className="text-[#00F0FF] text-xs font-mono tracking-widest uppercase hover:underline"
+                                >
+                                    Send another message
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
 
