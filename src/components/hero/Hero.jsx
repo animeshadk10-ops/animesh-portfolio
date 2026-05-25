@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, Twitter, ArrowRight } from 'lucide-react';
 import QuantumHorizonCanvas from './QuantumHorizonCanvas';
 import EditorialBackgroundText from './EditorialBackgroundText';
@@ -11,7 +10,6 @@ import FounderTerminal from './FounderTerminal';
 import TechStackDock from './TechStackDock';
 import Navbar from '../global/Navbar';
 import SystemStatus from '../global/SystemStatus';
-import MagneticCtaButton from './MagneticCtaButton'; // Added this import
 
 const SocialIcon = ({ Icon }) => (
     <motion.a
@@ -25,7 +23,7 @@ const SocialIcon = ({ Icon }) => (
 
 const Hero = () => {
     return (
-        <section className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col items-center justify-center pt-20 pb-40 font-sans cursor-none">
+        <section id="home" className="relative w-full min-h-screen bg-black overflow-hidden flex flex-col items-center justify-center pt-20 pb-40 font-sans cursor-none">
 
             {/* Top Level Navbar & System Status Integration */}
             <Navbar />

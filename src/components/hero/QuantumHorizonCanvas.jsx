@@ -55,7 +55,7 @@ void main() {
 
 const QuantumGeometry = () => {
     const meshRef = useRef();
-    const { mouse, viewport, camera } = useThree();
+    const { mouse, viewport } = useThree();
 
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
@@ -70,10 +70,10 @@ const QuantumGeometry = () => {
             meshRef.current.rotation.x += targetX * 0.1;
             meshRef.current.rotation.y += targetY * 0.1;
 
-            // Camera parallax
-            camera.position.x += (mouse.x * 2 - camera.position.x) * 0.05;
-            camera.position.y += (mouse.y * 2 - camera.position.y) * 0.05;
-            camera.lookAt(0, 0, 0);
+            // Camera parallax - offset camera position slightly based on mouse
+            state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, mouse.x * 2, 0.05);
+            state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, mouse.y * 2, 0.05);
+            state.camera.lookAt(0, 0, 0);
         }
     });
 

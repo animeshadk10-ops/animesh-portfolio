@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Github, ExternalLink } from 'lucide-react';
 import CyberTopographyBackground from './CyberTopographyBackground';
 import DecodeText from '../global/DecodeText';
 import { clipPathReveal, fadeUpTilt } from '../../utils/animations';
@@ -12,7 +13,8 @@ const projects = [
         description: "AI-powered agritech architecture utilizing Python and GenAI APIs. Engineered to provide instantaneous agricultural insights, effectively reducing farmer information retrieval time by 40% with full multilingual support.",
         tech: ["Python", "GenAI APIs", "React", "System Design"],
         color: "#00F0FF", // Neon Cyan
-        link: "#"
+        github: "https://github.com/animesh-adhikari",
+        live: "#"
     },
     {
         id: "flowos",
@@ -21,7 +23,8 @@ const projects = [
         description: "Advanced medical software engineered to optimize complex healthcare systems. Exploring next-generation operating interfaces to strictly structure productivity and secure workflow for medical professionals.",
         tech: ["Frontend Architecture", "State Management", "UI/UX", "Healthcare Tech"],
         color: "#FF007F", // Neon Magenta
-        link: "#"
+        github: "https://github.com/animesh-adhikari",
+        live: "#"
     },
     {
         id: "iot-weather",
@@ -30,7 +33,8 @@ const projects = [
         description: "A physical hardware bridge utilizing Arduino and environmental sensors to construct a real-time weather station system. Demonstrates cross-discipline engineering from raw hardware to software data streams.",
         tech: ["Arduino", "IoT", "C++", "Sensors"],
         color: "#FFD700", // Fiery Amber
-        link: "#"
+        github: "https://github.com/animesh-adhikari",
+        live: "#"
     }
 ];
 
@@ -175,9 +179,11 @@ const ProjectsSection = () => {
                                         ))}
                                     </div>
 
-                                    <div className="mt-8 flex">
+                                    <div className="mt-8 flex gap-4">
                                         <a
-                                            href={project.link}
+                                            href={project.live}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm tracking-widest uppercase transition-all duration-300 hover:scale-105"
                                             style={{
                                                 backgroundColor: `${project.color}15`,
@@ -186,10 +192,17 @@ const ProjectsSection = () => {
                                                 textShadow: `0 0 10px ${project.color}50`
                                             }}
                                         >
-                                            VIEW ARCHITECTURE
-                                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
+                                            <ExternalLink size={16} />
+                                            VIEW LIVE
+                                        </a>
+                                        <a
+                                            href={project.github}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm tracking-widest uppercase transition-all duration-300 hover:bg-white/10 border border-white/10 text-white"
+                                        >
+                                            <Github size={16} />
+                                            SOURCE
                                         </a>
                                     </div>
                                 </div>
