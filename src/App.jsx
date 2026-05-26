@@ -1,60 +1,72 @@
 import React from 'react';
-import GlobalCursor from './components/global/GlobalCursor';
+import Navbar from './components/global/Navbar';
+import ScrollProgress from './components/global/ScrollProgress';
+import CustomCursor from './components/global/CustomCursor';
 import Hero from './components/hero/Hero';
+import TechStackBar from './components/global/TechStackBar';
+import ServicesSection from './components/services/ServicesSection';
 import MarqueeDivider from './components/global/MarqueeDivider';
 import AboutSection from './components/about/AboutSection';
+import SkillsSection from './components/skills/SkillsSection';
 import ExperienceSection from './components/experience/ExperienceSection';
 import ProjectsSection from './components/projects/ProjectsSection';
 import ContactSection from './components/contact/ContactSection';
+import './App.css';
 
 function App() {
   return (
-    <div className="overflow-x-hidden">
-      <GlobalCursor />
+    <div className="overflow-x-hidden font-sans bg-[#050d1a] text-white text-base">
+      {/* Global overlays */}
+      <CustomCursor />
+      <ScrollProgress />
+      <Navbar />
 
+      {/* Sections */}
       <Hero />
+      <TechStackBar />
+      <ServicesSection />
 
-      {/* Divider 1: Hero -> About (The Human Element) */}
+      {/* Divider: Services -> About */}
       <MarqueeDivider
-        items={["CRUSHING ASSIGNMENTS", "SHIPPING PROJECTS", "DRINKING COFFEE", "COMPILING CODE"]}
-        bgColor="#FF007F"
-        textColor="text-black"
-        rotation="-2"
-        speed={50}
+        items={["CREATIVE VISION", "TECHNICAL EXCELLENCE", "PIXEL PERFECT", "CODE CRAFTED", "FUTURE READY"]}
+        gradientFrom="#00d4ff"
+        gradientTo="#a855f7"
+        rotation="-1"
+        speed={45}
       />
 
       <AboutSection />
+      <SkillsSection />
 
-      {/* Divider 2: About -> Experience (The System Boot) */}
+      {/* Divider: Skills -> Experience */}
       <MarqueeDivider
         items={["SYS.INIT", "LOADING ARCHITECTURE", "COMPILING DATA", "BYPASSING LIMITS", "EXECUTING PROTOCOL"]}
-        bgColor="#00F0FF"
-        textColor="text-black"
-        rotation="2"
+        gradientFrom="#a855f7"
+        gradientTo="#ec4899"
+        rotation="1"
         speed={40}
       />
 
       <ExperienceSection />
 
-      {/* Divider 3: Experience -> Projects (The Arsenal Warning) */}
+      {/* Divider: Experience -> Projects */}
       <MarqueeDivider
-        items={["/// ACCESSING THE ARSENAL", "DEPLOYING SYSTEMS", "INITIALIZING 3D ENVIRONMENT"]}
-        bgColor="transparent"
-        textColor="#FFD700"
+        items={["/// ACCESSING THE ARSENAL", "DEPLOYING SYSTEMS", "INITIALIZING RENDER", "BUILDING THE FUTURE"]}
+        gradientFrom="#f97316"
+        gradientTo="#facc15"
         rotation="0"
-        speed={70}
-        outline={true}
+        speed={55}
       />
 
       <ProjectsSection />
 
-      {/* Divider 4: Projects -> Contact (The Uplink Setup) */}
+      {/* Divider: Projects -> Contact */}
       <MarqueeDivider
         items={["ESTABLISHING SECURE UPLINK", "AWAITING PACKET", "ENCRYPTING CONNECTION", "READY FOR TRANSMISSION"]}
-        bgColor="#7000FF"
-        textColor="text-white"
+        gradientFrom="#ec4899"
+        gradientTo="#00d4ff"
         rotation="-1"
-        speed={60}
+        speed={50}
       />
 
       <ContactSection />

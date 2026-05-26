@@ -1,122 +1,362 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { User, Rocket, Activity, Cpu } from 'lucide-react';
-import NeonStellarBackground from './NeonStellarBackground';
-import { staggerContainer, fadeUpTilt, clipPathReveal } from '../../utils/animations';
-import img1 from '../../assets/images/animeshimg1.jpg';
-import img2 from '../../assets/images/animeshimg2.jpg';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
+import {
+  MapPin,
+  GraduationCap,
+  Download,
+  Code2,
+  Layout,
+  Globe,
+  Zap,
+  Coffee,
+} from 'lucide-react';
+import {
+  fadeInUp,
+  fadeIn,
+  staggerContainer,
+  slideInFromLeft,
+  slideInFromRight,
+  viewportConfig,
+  scaleIn,
+} from '../../utils/animations';
+import aboutImg from '../../assets/images/animesh3.jpeg';
 
-const AboutCard = ({ children, className = "" }) => {
-    return (
-        <motion.div
-            variants={fadeUpTilt}
-            className={`backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-3xl p-10 relative overflow-hidden group hover:border-[#FF007F]/40 hover:shadow-[0_0_40px_rgba(255,0,127,0.15),inset_0_0_20px_rgba(255,0,127,0.05)] transition-all duration-500 cursor-none ${className}`}
-        >
-            {/* Viewfinder Crosshairs */}
-            <div className="absolute top-4 left-4 w-3 h-3 flex items-center justify-center opacity-0 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute w-full h-[1px] bg-white/40"></div>
-                <div className="absolute h-full w-[1px] bg-white/40"></div>
-            </div>
-            <div className="absolute top-4 right-4 w-3 h-3 flex items-center justify-center opacity-0 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute w-full h-[1px] bg-white/40"></div>
-                <div className="absolute h-full w-[1px] bg-white/40"></div>
-            </div>
-            <div className="absolute bottom-4 left-4 w-3 h-3 flex items-center justify-center opacity-0 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute w-full h-[1px] bg-white/40"></div>
-                <div className="absolute h-full w-[1px] bg-white/40"></div>
-            </div>
-            <div className="absolute bottom-4 right-4 w-3 h-3 flex items-center justify-center opacity-0 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute w-full h-[1px] bg-white/40"></div>
-                <div className="absolute h-full w-[1px] bg-white/40"></div>
-            </div>
+/* ---- Animated counter hook ---- */
+const useCounter = (target, duration = 2000) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-50px' });
 
-            {children}
-        </motion.div>
-    );
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, target, duration]);
+
+  return { count, ref };
 };
 
+const StatItem = ({ value, suffix = '+', label, color }) => {
+  const isInfinity = value === '∞';
+  const { count, ref } = useCounter(isInfinity ? 0 : parseInt(value));
+
+  return (
+    <motion.div
+      ref={ref}
+      variants={fadeInUp}
+      className="flex flex-col items-center gap-1 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]"
+    >
+      <span
+        className="text-2xl font-display font-black"
+        style={{ color, animation: 'counter-glow 3s ease-in-out infinite' }}
+      >
+        {isInfinity ? '∞' : `${count}${suffix}`}
+      </span>
+      <span className="text-white/40 text-[10px] font-medium tracking-wider uppercase text-center leading-tight">
+        {label}
+      </span>
+    </motion.div>
+  );
+};
+
+const highlights = [
+  {
+    icon: Code2,
+    title: 'Clean Code',
+    desc: 'Readable, maintainable, and well-documented',
+    color: '#00d4ff',
+  },
+  {
+    icon: Layout,
+    title: 'System Design',
+    desc: 'Scalable architectures from day one',
+    color: '#a855f7',
+  },
+  {
+    icon: Globe,
+    title: 'Web3 Curious',
+    desc: 'Exploring decentralized frontiers',
+    color: '#f97316',
+  },
+  {
+    icon: Zap,
+    title: 'Fast Learner',
+    desc: 'Adapting to new stacks in record time',
+    color: '#ec4899',
+  },
+];
+
 const AboutSection = () => {
-    return (
-        <section id="about" className="relative w-full min-h-screen bg-[#05000A] py-32 px-6 flex flex-col items-center font-sans overflow-hidden cursor-none">
+  return (
+    <section
+      id="about"
+      className="relative py-28 px-6 overflow-hidden"
+      style={{
+        background: 'linear-gradient(180deg, #050d1a 0%, #0a1628 100%)',
+      }}
+    >
+      {/* Blur orbs */}
+      <div
+        className="absolute top-20 left-10 w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(0,212,255,0.07) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+        }}
+      />
+      <div
+        className="absolute bottom-20 right-10 w-[350px] h-[350px] rounded-full pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)',
+          filter: 'blur(70px)',
+        }}
+      />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(236,72,153,0.04) 0%, transparent 70%)',
+          filter: 'blur(90px)',
+        }}
+      />
 
-            {/* Dynamic 3D Fix Background */}
-            <NeonStellarBackground />
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Section header */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportConfig}
+          className="text-center mb-16"
+        >
+          <motion.div variants={fadeInUp} className="flex justify-center mb-5">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] text-xs font-medium text-white/60 tracking-wider uppercase">
+              <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
+              Get to Know Me
+            </span>
+          </motion.div>
 
-            <div className="relative z-20 w-full max-w-6xl mx-auto pointer-events-none">
+          <motion.h2
+            variants={fadeInUp}
+            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4"
+          >
+            <span className="text-white">Who is </span>
+            <span className="gradient-text-cyan">Animesh</span>
+            <span className="text-neon-cyan">?</span>
+          </motion.h2>
+        </motion.div>
 
-                {/* We need the staggerChildren container */}
-                <motion.div
-                    variants={staggerContainer}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, margin: "-100px" }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 pointer-events-auto"
-                >
+        {/* Split layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+          {/* Left side — 2/5 */}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportConfig}
+            className="lg:col-span-2 flex flex-col items-center"
+          >
+            {/* Photo container with animated neon border */}
+            <motion.div variants={scaleIn} className="relative mb-6 group">
+              {/* Animated spinning ring */}
+              <div
+                className="absolute -inset-[3px] rounded-2xl z-0"
+                style={{
+                  background:
+                    'conic-gradient(from 0deg, #00d4ff, #a855f7, #ec4899, #f97316, #facc15, #00d4ff)',
+                  animation: 'spin-slow 6s linear infinite',
+                }}
+              />
+              <div className="absolute -inset-[1px] rounded-2xl bg-brand-bg z-[1]" />
 
-                    {/* Card 1: Portrait */}
-                    <AboutCard className="md:col-span-1 md:row-span-2 p-0 flex flex-col justify-end">
-                        <img
-                            src={img1}
-                            alt="Animesh Base"
-                            className="absolute inset-0 w-full h-full object-cover grayscale opacity-100 group-hover:opacity-0 transition-all duration-700 z-10"
-                        />
-                        <img
-                            src={img2}
-                            alt="Animesh Active"
-                            className="absolute inset-0 w-full h-full object-cover scale-110 group-hover:scale-100 transition-all duration-700 z-0"
-                        />
+              {/* Image */}
+              <div className="relative z-[2] rounded-2xl overflow-hidden w-64 h-72 sm:w-72 sm:h-80">
+                <img
+                  src={aboutImg}
+                  alt="Animesh"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/60 via-transparent to-transparent" />
+              </div>
 
-                        {/* Gradient overlay (bottom up) */}
-                        <div className="absolute inset-x-0 bottom-0 h-1/2 z-20 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+              {/* Location badge */}
+              <motion.div
+                variants={fadeInUp}
+                className="absolute -bottom-3 -left-3 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] text-xs font-medium text-white/80"
+              >
+                <MapPin size={12} className="text-neon-cyan" />
+                India
+              </motion.div>
 
-                        <div className="relative z-30 p-6">
-                            <h3 className="text-white text-xl font-bold tracking-wide">Animesh Adhikari. Entrepreneur.</h3>
-                        </div>
-                    </AboutCard>
+              {/* Education badge */}
+              <motion.div
+                variants={fadeInUp}
+                className="absolute -bottom-3 -right-3 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] text-xs font-medium text-white/80"
+              >
+                <GraduationCap size={12} className="text-neon-purple" />
+                B.Tech AI & ML
+              </motion.div>
 
-                    {/* Card 2: Main Bio */}
-                    <AboutCard className="md:col-span-2">
-                        <User size={24} color="#00F0FF" className="mb-4 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
-                        <h3 className="text-2xl font-bold text-white mb-4">The Architecture of Impact</h3>
-                        <p className="text-gray-300 leading-loose text-sm md:text-base font-light">
-                            I’m a frontend engineer, builder, and engineering student driven by the ambition to create meaningful digital systems. My work sits at the intersection of technology, product thinking, and entrepreneurship. My journey started with a deep fascination for how digital products are designed, evolving into a focus on modern web technologies, performance, and functionality.
-                        </p>
-                    </AboutCard>
+              {/* Floating Code & Chai badge */}
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute -top-4 -right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-neon-orange/10 border border-neon-orange/20 text-xs font-medium text-neon-orange"
+              >
+                <Coffee size={12} />
+                Code & Chai
+              </motion.div>
+            </motion.div>
 
-                    {/* Card 3: Ventures */}
-                    <AboutCard className="md:col-span-1 flex flex-col justify-center">
-                        <Rocket size={24} color="#FF007F" className="mb-4 drop-shadow-[0_0_8px_rgba(255,0,127,0.8)]" />
-                        <h3 className="text-xl font-bold text-white mb-3">Current Ventures</h3>
-                        <ul className="text-gray-300 leading-loose text-sm md:text-base space-y-3 font-light list-disc pl-4">
-                            <li><span className="text-[#00F0FF] font-semibold drop-shadow-[0_0_5px_rgba(0,240,255,0.5)]">Agrivani:</span> Creating technology-driven solutions for agriculture.</li>
-                            <li><span className="text-[#FF007F] font-semibold drop-shadow-[0_0_5px_rgba(255,0,127,0.5)]">FlowOS:</span> Advanced medical software engineered to optimize healthcare systems and benefit people.</li>
-                        </ul>
-                    </AboutCard>
+            {/* Stats grid */}
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportConfig}
+              className="grid grid-cols-2 gap-3 w-full max-w-[300px] mt-4"
+            >
+              <StatItem
+                value="10"
+                label="Projects"
+                color="#00d4ff"
+              />
+              <StatItem
+                value="3"
+                label="Years Learning"
+                color="#a855f7"
+              />
+              <StatItem
+                value="5"
+                label="Tech Stacks"
+                color="#f97316"
+              />
+              <StatItem
+                value="∞"
+                suffix=""
+                label="Curiosity"
+                color="#ec4899"
+              />
+            </motion.div>
+          </motion.div>
 
-                    {/* Card 4: Mindset */}
-                    <AboutCard className="md:col-span-1 flex flex-col justify-center">
-                        <Activity size={24} color="#7000FF" className="mb-4 drop-shadow-[0_0_8px_rgba(112,0,255,0.8)]" />
-                        <h3 className="text-xl font-bold text-white mb-3">The Athlete Mindset</h3>
-                        <p className="text-gray-300 leading-loose text-sm md:text-base font-light">
-                            Training and sports have shaped how I approach my work—with consistency, resilience, and a focus on long-term progress. This discipline influences how I learn, build, and pursue ambitious goals.
-                        </p>
-                    </AboutCard>
+          {/* Right side — 3/5 */}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportConfig}
+            className="lg:col-span-3 flex flex-col gap-6"
+          >
+            {/* Bio card */}
+            <motion.div
+              variants={slideInFromRight}
+              className="bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] rounded-2xl p-8"
+            >
+              <h3 className="text-lg font-display font-bold text-white mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-neon-cyan" />
+                About Me
+              </h3>
+              <p className="text-white/50 text-sm leading-[1.8] mb-4">
+                Hey! I'm <span className="text-white font-semibold">Animesh</span> — a pre-final year{' '}
+                <span className="text-neon-cyan/80">B.Tech student in AI & ML</span> who is deeply
+                passionate about building things that live on the internet. My journey started with
+                curiosity about how websites work and evolved into a full-blown obsession with{' '}
+                <span className="text-neon-purple/80">full-stack development</span>,{' '}
+                <span className="text-neon-orange/80">cloud architecture</span>, and{' '}
+                <span className="text-neon-magenta/80">system design</span>.
+              </p>
+              <p className="text-white/50 text-sm leading-[1.8]">
+                I believe in writing code that is not just functional, but elegant. Whether it's
+                crafting responsive UIs, designing RESTful APIs, or deploying scalable
+                microservices — I approach every project with a builder's mindset and a
+                designer's eye.
+              </p>
+            </motion.div>
 
-                    {/* Card 5: Philosophy */}
-                    <AboutCard className="md:col-span-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-                        <div className="flex-1">
-                            <Cpu size={24} color="#FFD700" className="mb-4 drop-shadow-[0_0_8px_rgba(255,215,0,0.8)]" />
-                            <h3 className="text-xl font-bold text-white mb-3">Shaping the Future</h3>
-                            <p className="text-gray-300 text-lg font-light leading-loose">
-                                Right now, I’m focused on becoming a stronger engineer, exploring system design, and building products that push boundaries. For me, technology is not just about writing code — it’s about building systems that have the potential to shape the future.
-                            </p>
-                        </div>
-                    </AboutCard>
+            {/* Highlight cards */}
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewportConfig}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            >
+              {highlights.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.title}
+                    variants={fadeInUp}
+                    className="group flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] transition-all duration-300 cursor-default"
+                  >
+                    <div
+                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-shadow duration-300"
+                      style={{
+                        background: `${item.color}12`,
+                        boxShadow: `0 0 12px ${item.color}10`,
+                      }}
+                    >
+                      <Icon size={16} style={{ color: item.color }} />
+                    </div>
+                    <div>
+                      <h4 className="text-white text-sm font-semibold mb-0.5">
+                        {item.title}
+                      </h4>
+                      <p className="text-white/35 text-xs leading-relaxed">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
 
-                </motion.div>
-            </div>
-        </section>
-    );
+            {/* Download Resume CTA */}
+            <motion.div variants={fadeInUp} className="flex items-center gap-5 mt-2">
+              <a
+                href="#"
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 relative overflow-hidden"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #00d4ff, #0ea5e9)',
+                }}
+              >
+                {/* Shimmer */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <Download
+                  size={16}
+                  className="text-brand-bg relative z-10"
+                />
+                <span className="text-brand-bg relative z-10 tracking-wide">
+                  Download Resume
+                </span>
+              </a>
+              <span className="text-white/20 text-sm hidden sm:block">
+                — Let's build something awesome
+              </span>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default AboutSection;

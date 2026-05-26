@@ -1,69 +1,115 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useSpring } from 'framer-motion';
 
 const CustomCursor = () => {
-    const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-    // Motion values for tracking cursor position
-    const cursorX = useMotionValue(-100);
-    const cursorY = useMotionValue(-100);
+  const cursorX = useSpring(0, { stiffness: 300, damping: 28 });
+  const cursorY = useSpring(0, { stiffness: 300, damping: 28 });
+  const trailX = useSpring(0, { stiffness: 100, damping: 25 });
+  const trailY = useSpring(0, { stiffness: 100, damping: 25 });
 
-    // Springs for smooth movement
-    const springConfigRing = { damping: 15, stiffness: 150, mass: 0.5 };
-    const springConfigDot = { damping: 100, stiffness: 1000, mass: 0.1 }; // Instant tracking
+  useEffect(() => {
+    // Detect touch device
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(isTouch);
+    if (isTouch) return;
 
-    const cursorXSpring = useSpring(cursorX, springConfigRing);
-    const cursorYSpring = useSpring(cursorY, springConfigRing);
+    const handleMouseMove = (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+      trailX.set(e.clientX);
+      trailY.set(e.clientY);
+      if (!isVisible) setIsVisible(true);
+    };
 
-    const dotXSpring = useSpring(cursorX, springConfigDot);
-    const dotYSpring = useSpring(cursorY, springConfigDot);
+    const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseLeave = () => setIsVisible(false);
 
-    useEffect(() => {
-        const moveCursor = (e) => {
-            cursorX.set(e.clientX);
-            cursorY.set(e.clientY);
-        };
+    // Detect hoverable elements
+    const handleElementHover = () => setIsHovering(true);
+    const handleElementLeave = () => setIsHovering(false);
 
-        const handleMouseOver = (e) => {
-            const isInteractable = !!e.target.closest('button, a, [role="button"]');
-            setIsHovering(isInteractable);
-        };
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    document.addEventListener('mouseleave', handleMouseLeave);
 
-        window.addEventListener('mousemove', moveCursor);
-        window.addEventListener('mouseover', handleMouseOver);
+    // Add hover detection to interactive elements
+    const addHoverListeners = () => {
+      const elements = document.querySelectorAll('a, button, input, textarea, [role="button"]');
+      elements.forEach((el) => {
+        el.addEventListener('mouseenter', handleElementHover);
+        el.addEventListener('mouseleave', handleElementLeave);
+      });
+    };
 
-        return () => {
-            window.removeEventListener('mousemove', moveCursor);
-            window.removeEventListener('mouseover', handleMouseOver);
-        };
-    }, [cursorX, cursorY]);
+    addHoverListeners();
+    const observer = new MutationObserver(addHoverListeners);
+    observer.observe(document.body, { childList: true, subtree: true });
 
-    return (
-        <>
-            {/* Neon Ring */}
-            <motion.div
-                className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white/30 pointer-events-none z-[9999] flex items-center justify-center"
-                style={{
-                    x: cursorXSpring,
-                    y: cursorYSpring,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                    scale: isHovering ? 1.5 : 1,
-                    backgroundColor: isHovering ? 'rgba(255,255,255,0.05)' : 'transparent',
-                }}
-            />
-            {/* Trailing Dot */}
-            <motion.div
-                className="fixed top-0 left-0 w-1 h-1 bg-[#FF007F] rounded-full pointer-events-none z-[9999]"
-                style={{
-                    x: dotXSpring,
-                    y: dotYSpring,
-                    translateX: "-50%",
-                    translateY: "-50%",
-                }}
-            />
-        </>
-    );
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      observer.disconnect();
+    };
+  }, [cursorX, cursorY, trailX, trailY, isVisible]);
+
+  if (isTouchDevice) return null;
+
+  return (
+    <>
+      {/* Main cursor dot */}
+      <motion.div
+        className="fixed top-0 left-0 z-[9999] pointer-events-none mix-blend-difference"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+      >
+        <motion.div
+          animate={{
+            width: isHovering ? 40 : 8,
+            height: isHovering ? 40 : 8,
+            opacity: isVisible ? 1 : 0,
+          }}
+          transition={{ duration: 0.2 }}
+          className="rounded-full bg-white"
+          style={{
+            boxShadow: isHovering
+              ? '0 0 20px rgba(0, 212, 255, 0.5)'
+              : '0 0 10px rgba(255, 255, 255, 0.3)',
+          }}
+        />
+      </motion.div>
+
+      {/* Trail ring */}
+      <motion.div
+        className="fixed top-0 left-0 z-[9998] pointer-events-none"
+        style={{
+          x: trailX,
+          y: trailY,
+          translateX: '-50%',
+          translateY: '-50%',
+        }}
+      >
+        <motion.div
+          animate={{
+            width: isHovering ? 50 : 28,
+            height: isHovering ? 50 : 28,
+            opacity: isVisible ? 0.4 : 0,
+            borderColor: isHovering ? 'rgba(0, 212, 255, 0.6)' : 'rgba(255, 255, 255, 0.3)',
+          }}
+          transition={{ duration: 0.3 }}
+          className="rounded-full border-[1.5px]"
+        />
+      </motion.div>
+    </>
+  );
 };
 
 export default CustomCursor;

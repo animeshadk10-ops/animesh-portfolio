@@ -44,7 +44,7 @@ const KineticHeadline = ({ text = "Animesh Adhikari" }) => {
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-gray-500 font-black tracking-tighter text-[clamp(3rem,8vw,7rem)] leading-none text-center drop-shadow-[0_20px_50px_rgba(0,0,0,1)] select-none whitespace-nowrap inline-block px-4 pb-4"
+                    className="text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-gray-500 font-black tracking-tighter text-[clamp(2.5rem,10vw,7rem)] leading-none text-center drop-shadow-[0_20px_50px_rgba(0,0,0,1)] select-none whitespace-nowrap inline-block px-4 pb-4"
                 >
                     {characters.map((char, index) => (
                         <motion.span

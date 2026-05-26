@@ -1,13 +1,11 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import AuroraBackground from './AuroraBackground';
-import DecodeText from '../global/DecodeText';
 
 const ContactNode = ({ label, value }) => {
     return (
         <div className="mb-6">
-            <p className="text-[#FF007F] text-xs font-mono mb-1 tracking-widest uppercase">{label}</p>
-            <p className="text-gray-200 text-lg md:text-xl font-medium">{value}</p>
+            <p className="text-brand-light-blue text-xs font-bold mb-1 tracking-widest uppercase">{label}</p>
+            <p className="text-brand-navy text-lg md:text-xl font-medium">{value}</p>
         </div>
     );
 };
@@ -18,21 +16,19 @@ const ContactSection = () => {
         // Handle form submission logic here
     };
 
-    const inputClasses = "w-full bg-transparent border-b border-white/20 pb-4 text-white text-lg focus:outline-none focus:border-[#00F0FF] focus:shadow-[0_4px_15px_-3px_rgba(0,240,255,0.3)] transition-all duration-300 placeholder:text-gray-400 placeholder:font-mono placeholder:text-sm font-light [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[-webkit-text-fill-color:white] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0px_1000px_transparent_inset] [&:-webkit-autofill]:transition-[background-color] [&:-webkit-autofill]:duration-[5000s] [&:-webkit-autofill]:ease-in-out";
+    const inputClasses = "w-full bg-transparent border-b border-brand-navy/20 pb-4 text-brand-navy text-base md:text-lg focus:outline-none focus:border-brand-blue transition-all duration-300 placeholder:text-brand-navy/40 placeholder:font-sans placeholder:text-sm font-light [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:[-webkit-text-fill-color:#023047] [&:-webkit-autofill]:[-webkit-box-shadow:0_0_0px_1000px_transparent_inset] [&:-webkit-autofill]:transition-[background-color] [&:-webkit-autofill]:duration-[5000s] [&:-webkit-autofill]:ease-in-out";
 
     return (
-        <section id="contact" className="relative w-full min-h-screen py-32 px-6 flex flex-col items-center justify-center overflow-hidden bg-[#020005]">
-            <AuroraBackground />
-
-            <div className="relative z-20 w-full max-w-6xl mx-auto backdrop-blur-2xl bg-white/[0.02] border border-white/10 shadow-2xl rounded-[3rem] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <section id="contact" className="relative w-full min-h-screen py-24 md:py-32 px-6 flex flex-col items-center justify-center overflow-hidden bg-brand-bg font-sans">
+            <div className="relative z-20 w-full max-w-6xl mx-auto bg-white border border-gray-100 shadow-xl rounded-3xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-16">
 
                 {/* Left Column: Identity & Node Status */}
                 <div>
-                    <h2 className="text-sm text-[#00F0FF] tracking-[0.4em] font-bold mb-4 uppercase">
+                    <h2 className="text-sm text-brand-orange tracking-[0.2em] font-bold mb-4 uppercase">
                         ESTABLISH CONNECTION
                     </h2>
-                    <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-8 leading-tight">
-                        <DecodeText text="Let's engineer the next paradigm." />
+                    <h3 className="text-4xl md:text-5xl font-black text-brand-navy tracking-tight mb-8 leading-tight">
+                        Let's engineer the next paradigm.
                     </h3>
 
                     <div className="mt-8">
@@ -48,29 +44,28 @@ const ContactSection = () => {
                         <input
                             type="text"
                             name="name"
-                            placeholder="Your Name // System ID"
+                            placeholder="Your Name"
                             className={inputClasses}
                             required
                         />
                         <input
                             type="email"
                             name="email"
-                            placeholder="Email Address // Return Node"
+                            placeholder="Email Address"
                             className={inputClasses}
                             required
                         />
                         <textarea
                             rows="4"
                             name="message"
-                            placeholder="Encrypted Payload // How can we collaborate?"
+                            placeholder="How can we collaborate?"
                             className={`${inputClasses} resize-none`}
                             required
                         ></textarea>
 
-                        <button type="submit" className="relative overflow-hidden group w-full md:w-auto px-10 py-4 bg-white text-black font-black uppercase tracking-[0.2em] rounded-full hover:text-white transition-colors duration-300">
-                            <span className="absolute inset-0 w-full h-full bg-[#FF007F] scale-x-0 origin-left transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-x-100 z-0"></span>
-                            <span className="relative z-10 flex items-center gap-2 justify-center">
-                                TRANSMIT PACKET <ArrowRight size={16} />
+                        <button type="submit" className="relative overflow-hidden group w-full md:w-auto px-10 py-5 bg-brand-orange text-white font-bold uppercase tracking-widest rounded-full transition-colors duration-300 hover:bg-brand-yellow hover:shadow-md">
+                            <span className="relative z-10 flex items-center gap-2 justify-center text-sm">
+                                TRANSMIT MESSAGE <ArrowRight size={16} />
                             </span>
                         </button>
                     </form>
@@ -78,8 +73,8 @@ const ContactSection = () => {
             </div>
 
             {/* Global Footer */}
-            <div className="absolute bottom-6 w-full text-center text-gray-500 text-xs font-mono tracking-widest uppercase z-20">
-                © 2026 Animesh Adhikari. All systems operational.
+            <div className="absolute bottom-6 w-full text-center text-brand-navy/60 text-xs font-semibold tracking-widest uppercase z-20">
+                © {new Date().getFullYear()} Animesh Adhikari. Minimalist Execution.
             </div>
         </section>
     );
