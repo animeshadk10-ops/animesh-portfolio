@@ -9,10 +9,12 @@ import {
   ArrowRight,
   Layers,
   Filter,
+  Sparkles,
 } from 'lucide-react';
 import {
   fadeInUp,
   staggerContainer,
+  staggerFast,
   scaleIn,
   viewportConfig,
 } from '../../utils/animations';
@@ -31,7 +33,7 @@ const projects = [
     stars: 48,
     forks: 12,
     views: 320,
-    color: '#00d4ff',
+    color: '#00e5ff',
   },
   {
     id: 'flowos',
@@ -46,7 +48,7 @@ const projects = [
     stars: 65,
     forks: 18,
     views: 480,
-    color: '#a855f7',
+    color: '#7c4dff',
   },
   {
     id: 'iot-weather',
@@ -61,7 +63,7 @@ const projects = [
     stars: 34,
     forks: 9,
     views: 210,
-    color: '#f97316',
+    color: '#ff6d00',
   },
   {
     id: 'devfolio',
@@ -76,7 +78,7 @@ const projects = [
     stars: 92,
     forks: 24,
     views: 860,
-    color: '#ec4899',
+    color: '#ff4081',
   },
   {
     id: 'chatbot-ai',
@@ -91,7 +93,7 @@ const projects = [
     stars: 78,
     forks: 21,
     views: 540,
-    color: '#22d3ee',
+    color: '#00e676',
   },
   {
     id: 'cloud-deploy',
@@ -106,14 +108,14 @@ const projects = [
     stars: 56,
     forks: 15,
     views: 390,
-    color: '#facc15',
+    color: '#ffd600',
   },
 ];
 
 const categories = ['All', 'Full Stack', 'Frontend', 'AI/ML', 'Cloud'];
 
-/* 3D tilt project card */
-const ProjectCard = ({ project, isFeatured = false }) => {
+/* ─── Featured Project Card — full width showstopper ─── */
+const FeaturedCard = ({ project }) => {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -123,12 +125,7 @@ const ProjectCard = ({ project, isFeatured = false }) => {
     const rect = cardRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: y * -10, y: x * 10 });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setIsHovered(false);
+    setTilt({ x: y * -6, y: x * 6 });
   };
 
   return (
@@ -139,32 +136,42 @@ const ProjectCard = ({ project, isFeatured = false }) => {
       initial="hidden"
       whileInView="visible"
       viewport={viewportConfig}
-      className={`group relative ${isFeatured ? 'col-span-full' : ''}`}
-      style={{ perspective: '1000px' }}
+      className="group relative col-span-full mb-10"
+      style={{ perspective: '1200px' }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={() => {
+        setTilt({ x: 0, y: 0 });
+        setIsHovered(false);
+      }}
     >
       <div
-        className={`relative overflow-hidden rounded-2xl bg-white/[0.03] backdrop-blur-xl border transition-all duration-300 ${
-          isHovered
-            ? 'border-white/[0.15]'
-            : 'border-white/[0.06]'
-        } ${isFeatured ? 'flex flex-col md:flex-row' : 'flex flex-col'}`}
+        className="relative overflow-hidden rounded-3xl flex flex-col md:flex-row"
         style={{
           transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
           transition: 'transform 0.15s ease-out',
+          background: 'rgba(255,255,255,0.04)',
+          backdropFilter: 'blur(24px)',
+          border: isHovered ? `2px solid ${project.color}66` : '2px solid rgba(255,255,255,0.08)',
           boxShadow: isHovered
-            ? `0 0 40px ${project.color}15, 0 20px 60px rgba(0,0,0,0.4)`
-            : '0 4px 24px rgba(0,0,0,0.2)',
+            ? `0 0 60px ${project.color}22, 0 20px 80px rgba(0,0,0,0.5), inset 0 0 40px ${project.color}08`
+            : '0 8px 40px rgba(0,0,0,0.3)',
         }}
       >
-        {/* Image section */}
+        {/* Featured badge */}
         <div
-          className={`relative overflow-hidden ${
-            isFeatured ? 'md:w-1/2 h-64 md:h-auto' : 'h-48'
-          }`}
+          className="absolute top-5 right-5 z-20 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-white"
+          style={{
+            background: `linear-gradient(135deg, ${project.color}88, ${project.color}55)`,
+            boxShadow: `0 0 20px ${project.color}44`,
+          }}
         >
+          <Sparkles size={12} />
+          FEATURED
+        </div>
+
+        {/* Image section — large */}
+        <div className="relative md:w-1/2 h-72 md:h-[420px] overflow-hidden">
           <img
             src={project.image}
             alt={project.title}
@@ -172,13 +179,22 @@ const ProjectCard = ({ project, isFeatured = false }) => {
               isHovered ? 'scale-110' : 'scale-100'
             }`}
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/40 to-transparent" />
+          {/* Colorful gradient overlay using project color */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(to top, #071428 5%, ${project.color}22 40%, transparent 100%), linear-gradient(to right, #071428 0%, transparent 50%)`,
+            }}
+          />
           {/* Category badge */}
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-5 left-5 z-10">
             <span
-              className="px-3 py-1 rounded-full text-xs font-bold text-white/90 backdrop-blur-md"
-              style={{ backgroundColor: `${project.color}33`, border: `1px solid ${project.color}44` }}
+              className="px-4 py-2 rounded-full text-xs font-bold text-white backdrop-blur-md"
+              style={{
+                backgroundColor: `${project.color}44`,
+                border: `1px solid ${project.color}66`,
+                boxShadow: `0 0 15px ${project.color}33`,
+              }}
             >
               {project.category}
             </span>
@@ -186,29 +202,38 @@ const ProjectCard = ({ project, isFeatured = false }) => {
         </div>
 
         {/* Content section */}
-        <div className={`relative p-6 ${isFeatured ? 'md:w-1/2 md:p-10 flex flex-col justify-center' : ''}`}>
+        <div className="relative md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+          {/* Floating orb inside content */}
+          <div
+            className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
+            style={{
+              background: `radial-gradient(circle, ${project.color}15, transparent 70%)`,
+              filter: 'blur(40px)',
+            }}
+          />
+
           <h3
-            className={`font-display font-bold text-white tracking-tight mb-2 ${
-              isFeatured ? 'text-2xl md:text-3xl' : 'text-xl'
-            }`}
+            className="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white tracking-tight mb-4"
+            style={{ textShadow: `0 0 25px ${project.color}33` }}
           >
             {project.title}
           </h3>
 
-          <p className={`text-white/50 leading-relaxed mb-5 ${isFeatured ? 'text-base' : 'text-sm'}`}>
+          <p className="text-white/55 text-base leading-relaxed mb-6">
             {project.description}
           </p>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-5">
+          <div className="flex flex-wrap gap-2 mb-6">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2.5 py-1 rounded-md text-xs font-medium border"
+                className="px-3.5 py-1.5 rounded-full text-xs font-bold"
                 style={{
                   color: project.color,
-                  borderColor: `${project.color}22`,
-                  backgroundColor: `${project.color}0a`,
+                  backgroundColor: `${project.color}20`,
+                  border: `1px solid ${project.color}44`,
+                  textShadow: `0 0 8px ${project.color}33`,
                 }}
               >
                 {tag}
@@ -216,51 +241,224 @@ const ProjectCard = ({ project, isFeatured = false }) => {
             ))}
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center gap-4 mb-5 text-white/30 text-xs">
-            <span className="flex items-center gap-1">
-              <Star size={12} /> {project.stars}
+          {/* Stats — colored numbers */}
+          <div className="flex items-center gap-6 mb-7">
+            <span className="flex items-center gap-1.5 text-sm">
+              <Star size={15} style={{ color: project.color }} />
+              <span style={{ color: project.color, fontWeight: 700 }}>{project.stars}</span>
             </span>
-            <span className="flex items-center gap-1">
-              <GitFork size={12} /> {project.forks}
+            <span className="flex items-center gap-1.5 text-sm">
+              <GitFork size={15} style={{ color: project.color }} />
+              <span style={{ color: project.color, fontWeight: 700 }}>{project.forks}</span>
             </span>
-            <span className="flex items-center gap-1">
-              <Eye size={12} /> {project.views}
+            <span className="flex items-center gap-1.5 text-sm">
+              <Eye size={15} style={{ color: project.color }} />
+              <span style={{ color: project.color, fontWeight: 700 }}>{project.views}</span>
             </span>
           </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-3">
+          {/* Links — colored icons */}
+          <div className="flex items-center gap-4">
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white/70 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.1] hover:text-white transition-all duration-300"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                boxShadow: '0 0 15px rgba(255,255,255,0.05)',
+              }}
             >
-              <Github size={14} />
+              <Github size={16} />
+              Source Code
+            </a>
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, ${project.color}55, ${project.color}33)`,
+                border: `1px solid ${project.color}66`,
+                boxShadow: `0 0 25px ${project.color}22`,
+              }}
+            >
+              <ExternalLink size={16} />
+              Live Demo
+            </a>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ─── 3D tilt grid project card ─── */
+const ProjectCard = ({ project, index }) => {
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: y * -12, y: x * 12 });
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      layout
+      initial={{ opacity: 0, y: 40, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.95 }}
+      transition={{ duration: 0.45, delay: index * 0.08 }}
+      className="group relative"
+      style={{ perspective: '1000px' }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setTilt({ x: 0, y: 0 });
+        setIsHovered(false);
+      }}
+    >
+      <div
+        className="relative overflow-hidden rounded-2xl flex flex-col h-full"
+        style={{
+          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transition: 'transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s',
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(20px)',
+          border: isHovered ? `2px solid ${project.color}55` : '2px solid rgba(255,255,255,0.06)',
+          boxShadow: isHovered
+            ? `0 0 40px ${project.color}20, 0 20px 60px rgba(0,0,0,0.4)`
+            : '0 4px 24px rgba(0,0,0,0.2)',
+        }}
+      >
+        {/* Image with COLORFUL gradient overlay */}
+        <div className="relative h-52 overflow-hidden">
+          <img
+            src={project.image}
+            alt={project.title}
+            className={`w-full h-full object-cover transition-transform duration-700 ${
+              isHovered ? 'scale-115' : 'scale-100'
+            }`}
+            style={{
+              transform: isHovered ? 'scale(1.15)' : 'scale(1)',
+            }}
+          />
+          {/* Colorful gradient overlay — bottom to top using project color */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(to top, #071428 0%, ${project.color}18 50%, transparent 100%)`,
+            }}
+          />
+          {/* Side gradient tint */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, ${project.color}15, transparent 60%)`,
+            }}
+          />
+
+          {/* Category badge */}
+          <div className="absolute top-4 left-4 z-10">
+            <span
+              className="px-3 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-md"
+              style={{
+                backgroundColor: `${project.color}44`,
+                border: `1px solid ${project.color}66`,
+                boxShadow: `0 0 12px ${project.color}33`,
+              }}
+            >
+              {project.category}
+            </span>
+          </div>
+
+          {/* Stats overlay on image */}
+          <div className="absolute bottom-3 right-3 z-10 flex items-center gap-3 text-xs text-white/80">
+            <span className="flex items-center gap-1 px-2 py-1 rounded-md backdrop-blur-md" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+              <Star size={11} style={{ color: project.color }} />
+              <span style={{ color: project.color, fontWeight: 700 }}>{project.stars}</span>
+            </span>
+            <span className="flex items-center gap-1 px-2 py-1 rounded-md backdrop-blur-md" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+              <GitFork size={11} style={{ color: project.color }} />
+              <span style={{ color: project.color, fontWeight: 700 }}>{project.forks}</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="relative p-6 flex-1 flex flex-col">
+          <h3
+            className="text-xl font-display font-bold text-white tracking-tight mb-2"
+            style={{ textShadow: `0 0 15px ${project.color}22` }}
+          >
+            {project.title}
+          </h3>
+
+          <p className="text-white/50 text-sm leading-relaxed mb-5 flex-1">
+            {project.description}
+          </p>
+
+          {/* Tags — colored background pills */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1.5 rounded-full text-[11px] font-bold"
+                style={{
+                  color: project.color,
+                  backgroundColor: `${project.color}20`,
+                  border: `1px solid ${project.color}33`,
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Links — colored icons */}
+          <div className="flex items-center gap-3 mt-auto">
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white/80 hover:text-white transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
+            >
+              <Github size={15} style={{ color: project.color }} />
               Code
             </a>
             <a
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white border transition-all duration-300 hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:scale-105"
               style={{
-                background: `linear-gradient(135deg, ${project.color}22, ${project.color}11)`,
-                borderColor: `${project.color}33`,
+                background: `linear-gradient(135deg, ${project.color}44, ${project.color}22)`,
+                border: `1px solid ${project.color}55`,
+                boxShadow: `0 0 15px ${project.color}18`,
               }}
             >
-              <ExternalLink size={14} />
-              Live Demo
+              <ExternalLink size={15} />
+              Demo
             </a>
           </div>
         </div>
 
-        {/* Hover border glow accent */}
+        {/* Hover glow overlay */}
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           style={{
-            boxShadow: `inset 0 1px 0 ${project.color}22, inset 0 -1px 0 ${project.color}11`,
+            background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${project.color}08, transparent 40%)`,
           }}
         />
       </div>
@@ -282,14 +480,49 @@ const ProjectsSection = () => {
   return (
     <section
       id="projects"
-      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden"
+      className="relative w-full min-h-screen py-24 md:py-32 overflow-hidden section-accent-top"
       style={{
-        background: 'linear-gradient(180deg, #050d1a 0%, #0a1628 100%)',
+        background: 'linear-gradient(180deg, #071428 0%, #0a0f2e 50%, #071428 100%)',
       }}
     >
-      {/* Ambient glow blobs */}
-      <div className="absolute top-40 -left-40 w-[500px] h-[500px] bg-neon-purple/[0.04] rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-40 -right-40 w-[500px] h-[500px] bg-neon-cyan/[0.04] rounded-full blur-[140px] pointer-events-none" />
+      {/* Aurora bg */}
+      <div className="aurora-bg" />
+
+      {/* Vivid orb 1 — Purple top-right */}
+      <div
+        className="absolute -top-20 -right-32 rounded-full pointer-events-none"
+        style={{
+          width: 600,
+          height: 600,
+          background: 'radial-gradient(circle, rgba(124,77,255,0.2) 0%, transparent 65%)',
+          filter: 'blur(80px)',
+        }}
+      />
+
+      {/* Vivid orb 2 — Magenta bottom-left */}
+      <div
+        className="absolute -bottom-40 -left-32 rounded-full pointer-events-none"
+        style={{
+          width: 550,
+          height: 550,
+          background: 'radial-gradient(circle, rgba(255,64,129,0.15) 0%, transparent 65%)',
+          filter: 'blur(90px)',
+        }}
+      />
+
+      {/* Vivid orb 3 — Cyan center */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+        style={{
+          width: 400,
+          height: 400,
+          background: 'radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%)',
+          filter: 'blur(100px)',
+        }}
+      />
+
+      {/* Dot pattern */}
+      <div className="absolute inset-0 dot-pattern" style={{ opacity: 0.4 }} />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
         {/* Section Header */}
@@ -300,29 +533,42 @@ const ProjectsSection = () => {
           viewport={viewportConfig}
           className="text-center mb-14"
         >
-          <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6">
-            <Layers size={14} className="text-neon-purple" />
-            <span className="text-xs font-semibold tracking-[0.2em] text-neon-purple uppercase">
+          <motion.div
+            variants={fadeInUp}
+            className="inline-flex items-center gap-2 mb-6"
+          >
+            <span
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase"
+              style={{
+                background: 'linear-gradient(135deg, rgba(124,77,255,0.2), rgba(255,64,129,0.12))',
+                border: '1px solid rgba(124,77,255,0.3)',
+                color: '#ea80fc',
+                boxShadow: '0 0 20px rgba(124,77,255,0.15)',
+              }}
+            >
+              <Layers size={14} />
               Projects
             </span>
           </motion.div>
 
           <motion.h2
             variants={fadeInUp}
-            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-white mb-4"
+            className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-white mb-5"
           >
             Built to{' '}
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-              Ship & Scale
-            </span>
+            <span className="gradient-text-fire">Ship & Scale</span>
           </motion.h2>
 
-          <motion.p variants={fadeInUp} className="text-white/40 text-lg max-w-2xl mx-auto">
+          <motion.p
+            variants={fadeInUp}
+            className="text-white/50 text-lg max-w-2xl mx-auto"
+            style={{ textShadow: '0 0 15px rgba(124,77,255,0.1)' }}
+          >
             A curated collection of projects spanning full-stack development, AI/ML, and cloud infrastructure — each one built with passion and precision.
           </motion.p>
         </motion.div>
 
-        {/* Filter buttons */}
+        {/* Filter buttons — active has vivid gradient + glow */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
@@ -336,19 +582,25 @@ const ProjectsSection = () => {
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`relative px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${
-                  isActive
-                    ? 'text-white border-neon-cyan/50 bg-neon-cyan/[0.1]'
-                    : 'text-white/50 border-white/[0.08] bg-white/[0.03] hover:text-white/80 hover:border-white/[0.15]'
-                }`}
+                className="relative px-6 py-3 rounded-full text-sm font-bold transition-all duration-300"
                 style={
                   isActive
-                    ? { boxShadow: '0 0 20px rgba(0,212,255,0.15), 0 0 40px rgba(0,212,255,0.05)' }
-                    : {}
+                    ? {
+                        background: 'linear-gradient(135deg, #00e5ff, #7c4dff, #ff4081)',
+                        color: '#fff',
+                        boxShadow: '0 0 25px rgba(0,229,255,0.3), 0 0 50px rgba(124,77,255,0.15)',
+                        border: '2px solid rgba(255,255,255,0.2)',
+                        textShadow: '0 0 10px rgba(255,255,255,0.3)',
+                      }
+                    : {
+                        background: 'rgba(255,255,255,0.04)',
+                        color: 'rgba(255,255,255,0.5)',
+                        border: '2px solid rgba(255,255,255,0.08)',
+                      }
                 }
               >
                 <span className="flex items-center gap-1.5">
-                  {isActive && <Filter size={12} />}
+                  {isActive && <Filter size={13} />}
                   {cat}
                 </span>
               </button>
@@ -356,27 +608,23 @@ const ProjectsSection = () => {
           })}
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* Projects Grid with AnimatePresence */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.4 }}
           >
-            {/* Featured card */}
-            {featured && (
-              <div className="mb-8">
-                <ProjectCard project={featured} isFeatured />
-              </div>
-            )}
+            {/* Featured project — HUGE full width card */}
+            {featured && <FeaturedCard project={featured} />}
 
-            {/* Grid of remaining cards */}
+            {/* 3-column grid of remaining */}
             {rest.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rest.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                {rest.map((project, index) => (
+                  <ProjectCard key={project.id} project={project} index={index} />
                 ))}
               </div>
             )}
@@ -395,16 +643,19 @@ const ProjectsSection = () => {
             href="https://github.com/animeshadk10"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-white/[0.04] border border-white/[0.1] text-white font-semibold text-sm hover:bg-white/[0.08] hover:border-white/[0.2] transition-all duration-300"
+            className="group inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold text-white text-sm transition-all duration-300 hover:scale-105"
             style={{
-              boxShadow: '0 0 30px rgba(0,212,255,0.05)',
+              background: 'linear-gradient(135deg, rgba(0,229,255,0.15), rgba(124,77,255,0.1))',
+              border: '2px solid rgba(0,229,255,0.25)',
+              boxShadow: '0 0 30px rgba(0,229,255,0.12), 0 0 60px rgba(124,77,255,0.06)',
             }}
           >
-            <Github size={18} />
+            <Github size={18} style={{ color: '#00e5ff' }} />
             View All Projects on GitHub
             <ArrowRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1"
+              style={{ color: '#7c4dff' }}
             />
           </a>
         </motion.div>
